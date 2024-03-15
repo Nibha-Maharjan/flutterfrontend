@@ -42,8 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
           final data = jsonDecode(response.body);
           if (data != null && data.containsKey('token')) {
             String token = data['token'];
-            // Navigate to home page with token
-            Navigator.push(
+            // Navigate to home page with token and replace the current route
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => HomePage(token: token),
