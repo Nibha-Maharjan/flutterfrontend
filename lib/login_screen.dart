@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'home_page.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -103,6 +104,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: signIn,
               child: Text('Sign In'),
+            ),
+            SizedBox(height: 8.0), // Add some space
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the registration screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterScreen()),
+                );
+              },
+              child: Text('Register'),
             ),
           ],
         ),

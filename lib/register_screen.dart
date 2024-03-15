@@ -1,6 +1,6 @@
-// register_screen.dart
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'api_service.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -8,9 +8,75 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController fullnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  Future<void> register() async {
+    try {
+      final fullname = fullnameController.text;
+      final email = emailController.text;
+      final password = passwordController.text;
+      final confirmPassword = confirmPasswordController.text;
+
+      if (fullname.isEmpty ||
+          email.isEmpty ||
+          password.isEmpty ||
+          confirmPassword.isEmpty) {
+        throw Exception('All fields are required');
+      }
+
+      if (password != confirmPassword) {
+        throw Exception('Passwords do not match');
+      }
+
+      final requestBody = {
+        'fullname': fullname,
+        'email': email,
+        'password': password,
+        'confirmPassword': confirmPassword,
+      };
+
+      print('Request Body: $requestBody');
+
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/create-user'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Registration successful, handle navigation or other actions
+      } else {
+        throw Exception('Failed to register: ${response.body}');
+      }
+    } catch (e) {
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to register. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      print('Registration failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,41 +85,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: Text('Register'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: nameController,
+              controller: fullnameController,
               decoration: InputDecoration(labelText: 'Full Name'),
             ),
-            SizedBox(height: 10),
             TextField(
               controller: emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 10),
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(labelText: 'Password'),
             ),
-            SizedBox(height: 20),
+            TextField(
+              controller: confirmPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Confirm Password'),
+            ),
+            SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () async {
-                bool success = await ApiService.register(
-                  nameController.text,
-                  emailController.text,
-                  passwordController.text,
-                );
-                if (success) {
-                  // Show a success message or navigate to the login screen
-                  print('Registration successful');
-                } else {
-                  // Show an error message
-                  print('Registration failed');
-                }
-              },
+              onPressed: register,
               child: Text('Register'),
             ),
           ],
