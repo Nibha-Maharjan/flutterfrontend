@@ -1,22 +1,22 @@
-// home_page.dart
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  final String token;
+
+  HomePage({required this.token});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hospital Dashboard'),
+        title: Text('Home'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Welcome to the Hospital Dashboard!',
-              style: TextStyle(fontSize: 20),
-            ),
-            // Add more UI components as needed
+            Text('Welcome to the Home Page!'),
+            Text('Token: $token'), // Display token for testing
           ],
         ),
       ),

@@ -1,7 +1,7 @@
-// login_screen.dart
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'api_service.dart';
-import 'home_page.dart'; // Import the home page
+import 'package:http/http.dart' as http;
+import 'home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,6 +12,72 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  Future<void> signIn() async {
+    try {
+      final email = emailController.text;
+      final password = passwordController.text;
+
+      if (email.isEmpty || password.isEmpty) {
+        throw Exception('Email and password are required');
+      }
+
+      final requestBody = {
+        'email': email,
+        'password': password,
+      };
+
+      print('Request Body: $requestBody');
+
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/sign-in'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        if (response.body != null) {
+          final data = jsonDecode(response.body);
+          if (data != null && data.containsKey('token')) {
+            String token = data['token'];
+            // Navigate to home page with token
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(token: token),
+              ),
+            );
+            return;
+          }
+        }
+        throw Exception('Invalid response received: ${response.body}');
+      } else {
+        throw Exception('Failed to sign in: ${response.body}');
+      }
+    } catch (e) {
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to sign in. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      print('Sign in failed: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,46 +85,24 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Text('Login'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 10),
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(labelText: 'Password'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () async {
-                bool success = await ApiService.login(
-                  emailController.text,
-                  passwordController.text,
-                );
-                if (success) {
-                  // Navigate to home page upon successful login
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                } else {
-                  // Show an error message
-                  print('error');
-                }
-              },
-              child: Text('Login'),
-            ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
-              child: Text('Create an account'),
+              onPressed: signIn,
+              child: Text('Sign In'),
             ),
           ],
         ),
