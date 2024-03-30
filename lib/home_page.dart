@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'patient_list_screen.dart'; // Import the patient list screen
 import 'add_patient_screen.dart'; // Import the add patient screen
+import 'PatientRecordScreen.dart';
+import 'add_record_screen.dart'; // Import the patient record screen
+import 'CriticalPatientScreen.dart';
 
 class HomePage extends StatelessWidget {
   final String token;
@@ -74,6 +77,42 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) =>
                         AddPatientScreen(), // Navigate to Add Patient screen
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Patient Records'), // New ListTile for Add Patient
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PatientRecordsScreen(), // Navigate to Add Patient screen
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Add Records'), // New ListTile for Add Patient
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddRecordScreen(), // Navigate to Add Patient screen
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Critical Patients'), // New ListTile for Add Patient
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        CriticalPatientScreen(), // Navigate to Add Patient screen
                   ),
                 );
               },
