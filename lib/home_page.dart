@@ -7,8 +7,10 @@ import 'CriticalPatientScreen.dart';
 
 class HomePage extends StatelessWidget {
   final String token;
+  final String userEmail; // New field to accept user email
 
-  HomePage({required this.token});
+  HomePage(
+      {required this.token, required this.userEmail}); // Updated constructor
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +52,24 @@ class HomePage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    // Placeholder image, you can replace this with the user's actual profile picture
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    userEmail, // Use the userEmail passed from LoginPage
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
             ),
             ListTile(
@@ -70,51 +84,55 @@ class HomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text('Add Patient'), // New ListTile for Add Patient
+              title: Text('Add Patient'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AddPatientScreen(), // Navigate to Add Patient screen
+                    builder: (context) => AddPatientScreen(),
                   ),
                 );
               },
             ),
             ListTile(
-              title: Text('Patient Records'), // New ListTile for Add Patient
+              title: Text('Patient Records'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        PatientRecordsScreen(), // Navigate to Add Patient screen
+                    builder: (context) => PatientRecordsScreen(),
                   ),
                 );
               },
             ),
             ListTile(
-              title: Text('Add Records'), // New ListTile for Add Patient
+              title: Text('Add Records'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AddRecordScreen(), // Navigate to Add Patient screen
+                    builder: (context) => AddRecordScreen(),
                   ),
                 );
               },
             ),
             ListTile(
-              title: Text('Critical Patients'), // New ListTile for Add Patient
+              title: Text('Critical Patients'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        CriticalPatientScreen(), // Navigate to Add Patient screen
+                    builder: (context) => CriticalPatientScreen(),
                   ),
                 );
+              },
+            ),
+            ListTile(
+              title: Text('Logout'),
+              onTap: () {
+                // Perform logout action here, such as clearing the token or any user data
+                // Then navigate to the login screen
+                Navigator.pushReplacementNamed(context, '/login');
               },
             ),
             // Add more ListTile items for other options in the drawer
