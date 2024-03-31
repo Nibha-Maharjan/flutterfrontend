@@ -35,8 +35,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
       setState(() {
         _patients = List<Map<String, dynamic>>.from(json.decode(response.body));
         if (_patients.isNotEmpty) {
-          _selectedPatient = _patients
-              .first['_id']; // Set the first patient as selected by default
+          _selectedPatient = _patients.first['_id'];
         }
       });
     } else {
